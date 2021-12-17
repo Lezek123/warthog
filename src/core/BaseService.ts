@@ -23,7 +23,7 @@ import {
   RelayPageOptions,
   RelayService
 } from './RelayService';
-import ShortID from 'shortid';
+import * as shortid from 'shortid';
 
 export interface BaseOptions {
   manager?: EntityManager; // Allows consumers to pass in a TransactionManager
@@ -768,7 +768,7 @@ namespace RelationsManager {
     foreignColumnMap: StringMap,
     foreignColumnName: string
   ) {
-    const foreignTableAlias = ShortID.generate();
+    const foreignTableAlias = shortid.generate();
     const foreingIdColumn = `"${foreignTableAlias}"."${foreignColumnMap[foreignColumnName]}"`;
 
     // join must be performed on `topLevelQb` (it would be ignored on `qb` in some cases)
