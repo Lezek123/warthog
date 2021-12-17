@@ -631,10 +631,10 @@ namespace RelationsManager {
         qb: tmpQb
       };
       // setup SQL join and where conditions
-      common(tmpParameters, localIdColumn, foreignTableName, foreignColumnMap, foreignColumnName);
+      const foreignTableAlias = common(tmpParameters, localIdColumn, foreignTableName, foreignColumnMap, foreignColumnName);
 
       // convert where clause created for temporary query builder into "every" form
-      const foreingIdColumn = `"${foreignTableName}"."${foreignColumnMap[foreignColumnName]}"`;
+      const foreingIdColumn = `"${foreignTableAlias}"."${foreignColumnMap[foreignColumnName]}"`;
       parameters.qb.andHaving(
         `COUNT(${foreingIdColumn}) = COUNT(CASE WHEN ${tmpQb.expressionMap.wheres[0].condition} THEN 1 ELSE NULL END)`,
         tmpQb.expressionMap.parameters
@@ -767,7 +767,7 @@ namespace RelationsManager {
     foreignTableName: string,
     foreignColumnMap: StringMap,
     foreignColumnName: string
-  ) {
+  ): string {
     const foreignTableAlias = shortid.generate();
     const foreingIdColumn = `"${foreignTableAlias}"."${foreignColumnMap[foreignColumnName]}"`;
 
@@ -779,6 +779,7 @@ namespace RelationsManager {
     );
 
     addWhereCondition(parameters, foreignTableAlias, foreignColumnMap);
+    return foreignTableAlias;
   }
 
   /*
